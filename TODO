@@ -2,8 +2,25 @@
 -- Create a DB.
 -- Choose a NoSQL Db.
 
+- Use cases:
+- Given a Whale, what stocks did he purchase last quarter.
+- Given a whale, what stocks did he add positions to over the last year.
+- What stocks across whales, were added positions to the most over the last quarter/day/week/year.
+-- Sorted by size of purchases.
+-- Sorted by relative size of market cap.
+- Given a whale (and a time period), what stocks have been the longest in the portfolio (since '94).
+- Given a whale and a time period, what have been the "most active" stocks, ie. stocks which have been added and removed
+  the most.
+- Given a stock position, what's the approximate total return for the whale.
+
+  Whale Name | Whale ID | Stock Symbol | Cusip | Filing Date | Quarter | Year | Position (Value) | Number of Shares
+
+  Stock Symbol | Stock Price (average over Quarter) | Quarter | Year
+
 - A job to retrieve filings daily and update the db.
+- Given a cusip, find the ticker symbol.
 
 - Website
+- AWS? or some other cloud solution for hosting the website?
 
 - App
