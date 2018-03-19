@@ -1,6 +1,7 @@
 plugins {
     id 'war'
     id 'org.akhikhl.gretty' version '1.4.2'
+    id 'idea'
 }
 
 gretty {
@@ -9,9 +10,14 @@ gretty {
 
 repositories {
     jcenter()
+    mavenCentral()
 }
 
 dependencies {
+    compile 'com.amazonaws:aws-java-sdk-core:1.+'
+    compile 'com.amazonaws:aws-java-sdk:1.+'
+    compile 'com.amazonaws:aws-java-sdk-dynamodb:1.+'
+    compile 'net.sourceforge.htmlunit:htmlunit:2.+'
     providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile 'org.mockito:mockito-core:2+'
