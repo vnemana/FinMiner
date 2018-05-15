@@ -9,7 +9,13 @@ public class FinancialDataDaoTest {
     @Test
     public void insertInto13F() {
         FinancialDataDao fData = new FinancialDataDao();
-        fData.insertInto13F("Berkshire Hathaway", "GOOGL", "02079K305", "2018-03-05",
-                2018, 1, 1079206000, 20742000);
+        fData.setWhale("Berkshire Hathaway");
+        fData.setCusip("02079K305");
+        fData.setStock("GOOGL");
+        fData.setFilingDate("2018-03-05");
+        fData.setReportDate("2017-12-31");
+        fData.setPosition(1079206000);
+        fData.setNumShares(20742000);
+        fData.insertInto13F();
     }
 }

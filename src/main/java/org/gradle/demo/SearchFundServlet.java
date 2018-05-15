@@ -27,7 +27,10 @@ import java.util.List;
 // query
 @WebServlet(name="SearchFundServlet", urlPatterns = {"searchfund"})
 public class SearchFundServlet extends HttpServlet {
-    protected static final String searchUrl = "https://www.sec.gov/cgi-bin/browse-edgar?company=";
+    private static final String searchUrl = "https://www.sec.gov/cgi-bin/browse-edgar?company=";
+    private static final String searchSite = "https://www.sec.gov";
+    private static final String search13fParam = "&type=13F-HR";
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         response.getWriter().print("Hello, SearchFund!");
@@ -38,23 +41,20 @@ public class SearchFundServlet extends HttpServlet {
         if (fundString == null) fundString = "Berkshire Hathaway";
         String urlString = searchUrl + fundString;
 
-        System.out.println("URL: < " + urlString + ">");
         try (final WebClient webClient = new WebClient()) {
             final HtmlPage page = webClient.getPage(urlString);
 
             List<DomElement> nodes = page.getElementsByName("contentDiv");
 
-            System.out.println("Page: <" + page.getBody().getNodeName() + ">");
             HtmlElement body = page.getBody();
             HtmlElement series = body.getOneHtmlElementByAttribute("div", "id", "seriesDiv");
             HtmlTable table = series.getOneHtmlElementByAttribute("table", "summary", "Results");
 
-            System.out.println("Table Row Count: " + table.getRowCount());
             //System.out.println(page.getAnchors().toString());
-            int rowCount = 0;
+            boolean firstRow = true;
             for (HtmlTableRow row : table.getRows()) {
-                if (rowCount == 0) {
-                    rowCount++;
+                if (firstRow) {
+                    firstRow = false;
                     continue;
                 }
                 try {
@@ -62,12 +62,42 @@ public class SearchFundServlet extends HttpServlet {
                     String anchorText = cell.asText();
                     HtmlAnchor ha = page.getAnchorByText(anchorText);
                     if (ha != null) {
-                        System.out.println(ha.getHrefAttribute());
+                        String search13fSite = searchSite + ha.getHrefAttribute() + search13fParam;
+                        //System.out.println("Search13fSite: " + search13fSite);
+                        final HtmlPage search13fResultsPage = webClient.getPage(search13fSite);
+                        HtmlTable results13fTable = search13fResultsPage.getBody().getOneHtmlElementByAttribute(
+                                "table", "summary", "Results");
+                        int numRows = results13fTable.getRowCount();
+                        if (numRows <= 1)
+                            System.out.println("No Results");
+                        else {
+                            System.out.println("Num Results: " + (numRows-1));
+                            List<HtmlAnchor> htmlAnchors13f = search13fResultsPage.getAnchors();
+                            for (int rowNum = 1; rowNum < 2; rowNum++) {
+                                HtmlTableRow row13F = results13fTable.getRow(rowNum);
+                                HtmlTableCell htmlTableCell = row13F.getCell(2);
+                                String accountString = htmlTableCell.asText();
+                                String accountStringArray[] = accountString.split(":");
+                                String accountArray[] = accountStringArray[1].split(" ");
+                                for (HtmlAnchor ha13F : htmlAnchors13f) {
+                                    if (ha13F.getHrefAttribute().contains(accountArray[1])) {
+                                        String filing13FLink = searchSite + ha13F.getHrefAttribute();
+                                        final HtmlPage filing13FPage = webClient.getPage(filing13FLink);
+
+                                    }
+                                }
+//                                HtmlAnchor htmlAnchorFiling13F = search13fResultsPage.getAnchorByName("Documents");
+//                                if (htmlAnchorFiling13F != null) {
+//                                    String filing13FLink = searchSite + htmlAnchorFiling13F.getHrefAttribute();
+//                                    System.out.println(filing13FLink);
+//                                }
+                            }
+                        }
                     }
                 } catch (ElementNotFoundException e) {
-                    e.printStackTrace();
+                    System.out.println("Element Not Found Exception");
+                    //e.printStackTrace();
                 }
-                System.out.println("----");
             }
         }
     }
