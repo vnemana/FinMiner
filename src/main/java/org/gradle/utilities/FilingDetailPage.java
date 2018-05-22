@@ -9,6 +9,8 @@ import java.util.List;
 
 public class FilingDetailPage {
     private String filingDetailURL;
+    private static final String searchSite = "https://www.sec.gov";
+
     public FilingDetailPage(String url) {
         filingDetailURL = url;
     }
@@ -32,7 +34,7 @@ public class FilingDetailPage {
                     String sourceData = sourceArr[0] + (ii+1) + sourceArr[2];
                     List<DomNode> sourceNodes = filing13FPage.getByXPath(sourceData);
                     if (sourceNodes.size() > 0)
-                        return sourceNodes.get(0).getTextContent();
+                        return searchSite + sourceNodes.get(0).getTextContent();
                 }
             }
         } catch (MalformedURLException e) {

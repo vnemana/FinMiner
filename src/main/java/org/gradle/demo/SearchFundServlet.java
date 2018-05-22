@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 
 
 //This servlet will search through EDGAR Company filings for the hedge fund or company and return the results of the
@@ -34,12 +33,11 @@ public class SearchFundServlet extends HttpServlet {
             throws IOException {
         String fundString = request.getParameter("searchstring");
         if (fundString == null) fundString = "Berkshire Hathaway";
+
         String urlString = searchUrl + fundString;
 
         try (final WebClient webClient = new WebClient()) {
             final HtmlPage page = webClient.getPage(urlString);
-
-            List<DomElement> nodes = page.getElementsByName("contentDiv");
 
             HtmlElement body = page.getBody();
             HtmlElement series = body.getOneHtmlElementByAttribute("div", "id", "seriesDiv");
@@ -62,7 +60,6 @@ public class SearchFundServlet extends HttpServlet {
                         if (filing13FLink != null) {
                             FilingDetailPage filingDetailPage = new FilingDetailPage(filing13FLink);
                             String rawFilingURL = filingDetailPage.getRawFiling();
-                            rawFilingURL = searchSite + rawFilingURL;
                             if (rawFilingURL != null) {
                                 Get13FServlet get13FServlet = new Get13FServlet();
                                 HashMap<String, HoldingRecord> holdingRecords = get13FServlet.parseDocument(rawFilingURL);
