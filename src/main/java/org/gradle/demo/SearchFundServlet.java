@@ -3,9 +3,7 @@ package org.gradle.demo;
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.*;
-import com.gargoylesoftware.htmlunit.javascript.host.dom.NodeList;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
+import org.gradle.utilities.FilingDetailPage;
 import org.xml.sax.SAXException;
 
 import javax.servlet.ServletException;
@@ -13,12 +11,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -63,15 +57,11 @@ public class SearchFundServlet extends HttpServlet {
                     HtmlAnchor ha = page.getAnchorByText(anchorText);
                     if (ha != null) {
                         String search13fSite = searchSite + ha.getHrefAttribute() + search13fParam;
-                        //System.out.println("Search13fSite: " + search13fSite);
                         final HtmlPage search13fResultsPage = webClient.getPage(search13fSite);
                         HtmlTable results13fTable = search13fResultsPage.getBody().getOneHtmlElementByAttribute(
                                 "table", "summary", "Results");
                         int numRows = results13fTable.getRowCount();
-                        if (numRows <= 1)
-                            System.out.println("No Results");
-                        else {
-                            System.out.println("Num Results: " + (numRows-1));
+                        if (numRows > 1) {
                             List<HtmlAnchor> htmlAnchors13f = search13fResultsPage.getAnchors();
                             for (int rowNum = 1; rowNum < 2; rowNum++) {
                                 HtmlTableRow row13F = results13fTable.getRow(rowNum);
@@ -82,21 +72,29 @@ public class SearchFundServlet extends HttpServlet {
                                 for (HtmlAnchor ha13F : htmlAnchors13f) {
                                     if (ha13F.getHrefAttribute().contains(accountArray[1])) {
                                         String filing13FLink = searchSite + ha13F.getHrefAttribute();
-                                        final HtmlPage filing13FPage = webClient.getPage(filing13FLink);
-
+                                        FilingDetailPage filingDetailPage = new FilingDetailPage(filing13FLink);
+                                        String rawFilingURL = filingDetailPage.getRawFiling();
+                                        rawFilingURL = searchSite + rawFilingURL;
+                                        if (rawFilingURL != null) {
+                                            Get13FServlet get13FServlet = new Get13FServlet();
+                                            HashMap<String, HoldingRecord> holdingRecords = get13FServlet.parseDocument(rawFilingURL);
+                                            request.setAttribute("fData", holdingRecords);
+                                            request.getRequestDispatcher("13fdata.jsp").forward(request, response);
+                                        }
                                     }
                                 }
-//                                HtmlAnchor htmlAnchorFiling13F = search13fResultsPage.getAnchorByName("Documents");
-//                                if (htmlAnchorFiling13F != null) {
-//                                    String filing13FLink = searchSite + htmlAnchorFiling13F.getHrefAttribute();
-//                                    System.out.println(filing13FLink);
-//                                }
                             }
                         }
                     }
                 } catch (ElementNotFoundException e) {
                     System.out.println("Element Not Found Exception");
                     //e.printStackTrace();
+                } catch (SAXException e) {
+                    e.printStackTrace();
+                } catch (ParserConfigurationException e) {
+                    e.printStackTrace();
+                } catch (ServletException e) {
+                    e.printStackTrace();
                 }
             }
         }
