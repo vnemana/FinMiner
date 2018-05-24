@@ -5,6 +5,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.*;
 import org.gradle.utilities.FilingDetailPage;
 import org.gradle.utilities.Search13FResultsPage;
+import org.gradle.utilities.StoreFilingData;
 import org.xml.sax.SAXException;
 
 import javax.servlet.ServletException;
@@ -65,6 +66,9 @@ public class SearchFundServlet extends HttpServlet {
                                 HashMap<String, HoldingRecord> holdingRecords = get13FServlet.parseDocument(rawFilingURL);
                                 request.setAttribute("fData", holdingRecords);
                                 request.getRequestDispatcher("13fdata.jsp").forward(request, response);
+
+                                StoreFilingData storeFilingData = new StoreFilingData();
+                                storeFilingData.store13FData(holdingRecords, filingDetailPage);
                             }
                         }
                     }

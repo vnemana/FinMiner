@@ -19,6 +19,7 @@
         <th>Cusip</th>
         <th>Issuer Name</th>
         <th>Number of Shares</th>
+        <th>Position</th>
         </tr>
         <%
         HashMap<String, HoldingRecord> holdingRecords = (HashMap<String, HoldingRecord>) request.getAttribute("fData");
@@ -31,6 +32,7 @@
             <td><%out.println(hr.getCusip());%></td>
             <td><%out.println(hr.getIssuerName());%></td>
             <td><%out.println(hr.getNumberOfShares());%></td>
+            <td><%out.println(hr.getPosition());%></td>
             </tr>
         <%}%>
     </table>

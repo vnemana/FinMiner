@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
-import java.util.Iterator;
 
 @WebServlet(name = "Get13FServlet", urlPatterns = {"get13f"}, loadOnStartup = 1)
 public class Get13FServlet extends HttpServlet {
@@ -37,14 +36,12 @@ public class Get13FServlet extends HttpServlet {
             request.setAttribute("fData", holdingRecords);
             request.getRequestDispatcher("13fdata.jsp").forward(request, response);
         }
-        catch(ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
+        catch(ParserConfigurationException | SAXException e) {
             e.printStackTrace();
         }
     }
 
-    protected HashMap<String, HoldingRecord> parseDocument(String urlString)
+    HashMap<String, HoldingRecord> parseDocument(String urlString)
             throws IOException, ParserConfigurationException, SAXException {
         URL url = new URL(urlString);
         URLConnection urlConnection = url.openConnection();
@@ -66,24 +63,25 @@ public class Get13FServlet extends HttpServlet {
             Element element = (Element) node;
             String issuerName = element.getElementsByTagName("nameOfIssuer").item(0).getTextContent();
             String cusip = element.getElementsByTagName("cusip").item(0).getTextContent();
-            int numberOfShares = Integer.valueOf(element.getElementsByTagName("sshPrnamt").item(0).getTextContent());
+            long numberOfShares = Long.valueOf(element.getElementsByTagName("sshPrnamt").item(0).getTextContent());
+            long position = Long.valueOf(element.getElementsByTagName("value").item(0).getTextContent())*1000;
 
-            HoldingRecord hr = new HoldingRecord(issuerName, cusip, numberOfShares);
+            HoldingRecord hr = new HoldingRecord(issuerName, cusip, numberOfShares, position);
             HoldingRecord existingHr = holdingRecords.get(cusip);
             if (existingHr != null) {
                 existingHr.numberOfShares += numberOfShares;
+                existingHr.position += position;
             }
             else {
                 holdingRecords.put(cusip, hr);
             }
         }
 
-        Iterator iterator = holdingRecords.entrySet().iterator();
-        while (iterator.hasNext()) {
-            HashMap.Entry pair = (HashMap.Entry) iterator.next();
-            HoldingRecord hr = (HoldingRecord) pair.getValue();
+//        for (Object o : holdingRecords.entrySet()) {
+//            HashMap.Entry pair = (HashMap.Entry) o;
+//            HoldingRecord hr = (HoldingRecord) pair.getValue();
             //System.out.println(hr.cusip + " "  + hr.issuerName + " " + hr.numberOfShares);
-        }
+//        }
         return holdingRecords;
     }
 }

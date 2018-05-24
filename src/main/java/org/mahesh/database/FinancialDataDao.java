@@ -4,14 +4,6 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
-import com.amazonaws.services.dynamodbv2.document.DynamoDB;
-import com.amazonaws.services.dynamodbv2.document.Item;
-import com.amazonaws.services.dynamodbv2.document.PutItemOutcome;
-import com.amazonaws.services.dynamodbv2.document.Table;
-import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @DynamoDBTable(tableName = "financial_data")
 public class FinancialDataDao {
@@ -19,10 +11,10 @@ public class FinancialDataDao {
     private String id;
     private String whale;
     private String cusip;
-    private String filingDate;
-    private String reportDate;
+    private long filingDate;
+    private long reportDate;
     private double position;
-    private int numShares;
+    private long numShares;
     private String stock;
 
     @DynamoDBHashKey (attributeName = "id")
@@ -43,20 +35,20 @@ public class FinancialDataDao {
     public void setStock (String stock) {this.stock = stock;}
 
     @DynamoDBAttribute (attributeName = "filing_date")
-    public String getFilingDate() {return filingDate;}
-    public void setFilingDate(String filingDate) {this.filingDate = filingDate;}
+    public long getFilingDate() {return filingDate;}
+    public void setFilingDate(long filingDate) {this.filingDate = filingDate;}
 
     @DynamoDBAttribute (attributeName = "report_date")
-    public String getReportDate() {return reportDate;}
-    public void setReportDate(String reportDate) {this.reportDate = reportDate;}
+    public long getReportDate() {return reportDate;}
+    public void setReportDate(long reportDate) {this.reportDate = reportDate;}
 
     @DynamoDBAttribute (attributeName = "position")
     public double getPosition() {return position;}
     public void setPosition(double position) {this.position = position;}
 
     @DynamoDBAttribute (attributeName = "num_shares")
-    public int getNumShares() {return numShares;}
-    public void setNumShares(int numShares) {this.numShares = numShares;}
+    public long getNumShares() {return numShares;}
+    public void setNumShares(long numShares) {this.numShares = numShares;}
 
     public void insertInto13F() {
         AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()
@@ -65,40 +57,4 @@ public class FinancialDataDao {
         DynamoDBMapper dbMapper = new DynamoDBMapper(client);
         dbMapper.save(this);
     }
-
-//    public void insertInto13F(String whale, String stock, String cusip, String filingDate, String reportDate,
-//                              double position, int numShares) {
-//        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()
-//                .withRegion(Regions.US_WEST_2)
-//                .build();
-//        DynamoDB dynamoDB = new DynamoDB(client);
-//        Table table = dynamoDB.getTable("financial_data");
-//
-////        final Map<String, Object> infoMap = new HashMap<>();
-////        infoMap.put ("id", getId());
-////        infoMap.put ("stock", stock);
-////        infoMap.put ("cusip", cusip);
-////        infoMap.put ("filing_date", filingDate);
-////        infoMap.put ("report_date", reportDate);
-////        infoMap.put ("position_value", position);
-////        infoMap.put ("num_shares", numShares);
-//
-//        try {
-//            DynamoDBMapper mapper = new DynamoDBMapper(client);
-//            mapper.;
-//            PutItemOutcome outcome = table.putItem(new Item()
-//                    .withPrimaryKey("id", getId())
-//                    .withString("cusip", cusip)
-//                    .withString("stock", stock)
-//                    .withString("whale", whale)
-//                    .withString("filing_date", filingDate)
-//                    .withString("report_date", reportDate)
-//                    .withNumber("position_value", position)
-//                    .withNumber("num_shares", numShares));
-//            System.out.println("PutItem succeeded: " + outcome.getPutItemResult());
-//        }catch (Exception e) {
-//            System.err.println("Unable to write to table - financial_data");
-//            System.err.println(e.getMessage());
-//        }
-//    }
 }

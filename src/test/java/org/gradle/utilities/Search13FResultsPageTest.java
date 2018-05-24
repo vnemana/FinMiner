@@ -2,8 +2,6 @@ package org.gradle.utilities;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class Search13FResultsPageTest {
 
     @Test
