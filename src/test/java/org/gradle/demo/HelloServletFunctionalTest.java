@@ -9,8 +9,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
-import static org.junit.Assert.assertEquals;
-
 public class HelloServletFunctionalTest {
     private WebDriver driver;
 
@@ -31,7 +29,7 @@ public class HelloServletFunctionalTest {
     }
 
     @Test
-    public void sayHello() throws Exception {
+    public void sayHello() {
         driver.get("http://localhost:8080/FinMiner");
 
         driver.findElement(By.id("say-hello-text-input")).sendKeys("Dolly");

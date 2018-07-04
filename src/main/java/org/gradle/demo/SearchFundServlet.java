@@ -24,7 +24,7 @@ import java.util.HashMap;
 // query
 @WebServlet(name="SearchFundServlet", urlPatterns = {"searchfund"})
 public class SearchFundServlet extends HttpServlet {
-    final static Logger logger = LoggerFactory.getLogger(SearchFundServlet.class);
+    private final static Logger logger = LoggerFactory.getLogger(SearchFundServlet.class);
     private static final String searchUrl = "https://www.sec.gov/cgi-bin/browse-edgar?company=";
     private static final String searchSite = "https://www.sec.gov";
     private static final String search13fParam = "&type=13F-HR&count=100";

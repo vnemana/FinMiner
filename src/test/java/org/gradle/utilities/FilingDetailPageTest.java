@@ -13,21 +13,21 @@ public class FilingDetailPageTest {
 
 
     @Test
-    public void getFilingDate() throws Exception {
+    public void getFilingDate() {
         FilingDetailPage filingDetailPage = new FilingDetailPage(
                 "https://www.sec.gov/Archives/edgar/data/1067983/000095012318005732/0000950123-18-005732-index.htm");
         System.out.println(filingDetailPage.getFilingDate().getTime());
     }
 
     @Test
-    public void getReportDate() throws Exception {
+    public void getReportDate() {
         FilingDetailPage filingDetailPage = new FilingDetailPage(
                 "https://www.sec.gov/Archives/edgar/data/1067983/000095012318005732/0000950123-18-005732-index.htm");
         System.out.println(filingDetailPage.getReportDate().getTime());
     }
 
     @Test
-    public void getCompanyName() throws Exception {
+    public void getCompanyName() {
         FilingDetailPage filingDetailPage = new FilingDetailPage(
                 "https://www.sec.gov/Archives/edgar/data/1067983/000095012318005732/0000950123-18-005732-index.htm");
         System.out.println(filingDetailPage.getCompanyName());

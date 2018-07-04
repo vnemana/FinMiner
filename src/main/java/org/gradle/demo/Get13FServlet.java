@@ -23,7 +23,7 @@ import java.util.HashMap;
 @WebServlet(name = "Get13FServlet", urlPatterns = {"get13f"}, loadOnStartup = 1)
 public class Get13FServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
         response.getWriter().print("Hello, 13F!");
     }
 

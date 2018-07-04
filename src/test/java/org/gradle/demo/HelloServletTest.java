@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class HelloServletTest {
     @Mock private HttpServletRequest request;
@@ -20,7 +20,7 @@ public class HelloServletTest {
     @Mock private RequestDispatcher requestDispatcher;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
     }
 
