@@ -6,6 +6,8 @@ import com.gargoylesoftware.htmlunit.html.*;
 import org.gradle.utilities.FilingDetailPage;
 import org.gradle.utilities.Search13FResultsPage;
 import org.gradle.utilities.StoreFilingData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import javax.servlet.ServletException;
@@ -22,9 +24,10 @@ import java.util.HashMap;
 // query
 @WebServlet(name="SearchFundServlet", urlPatterns = {"searchfund"})
 public class SearchFundServlet extends HttpServlet {
+    final static Logger logger = LoggerFactory.getLogger(SearchFundServlet.class);
     private static final String searchUrl = "https://www.sec.gov/cgi-bin/browse-edgar?company=";
     private static final String searchSite = "https://www.sec.gov";
-    private static final String search13fParam = "&type=13F-HR";
+    private static final String search13fParam = "&type=13F-HR&count=100";
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
@@ -56,11 +59,14 @@ public class SearchFundServlet extends HttpServlet {
                     HtmlAnchor ha = page.getAnchorByText(anchorText);
                     if (ha != null) {
                         String search13fSite = searchSite + ha.getHrefAttribute() + search13fParam;
+                        logger.info("Search Site: " + search13fSite);
                         Search13FResultsPage s = new Search13FResultsPage(search13fSite);
                         String filing13FLink = s.get13FFilingLink();
+                        logger.info("Filing Link: " + filing13FLink);
                         if (filing13FLink != null) {
                             FilingDetailPage filingDetailPage = new FilingDetailPage(filing13FLink);
                             String rawFilingURL = filingDetailPage.getRawFiling();
+                            logger.info ("Raw Filing URL: " + rawFilingURL);
                             if (rawFilingURL != null) {
                                 Get13FServlet get13FServlet = new Get13FServlet();
                                 HashMap<String, HoldingRecord> holdingRecords = get13FServlet.parseDocument(rawFilingURL);

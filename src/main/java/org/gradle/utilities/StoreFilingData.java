@@ -26,7 +26,7 @@ public class StoreFilingData {
             fData.setStock(holdingRecord.getIssuerName());
             fData.setPosition(holdingRecord.getPosition());
             fData.setNumShares(holdingRecord.getNumberOfShares());
-            fData.insertInto13F();
+            //fData.insertInto13F();
         }
     }
 }
