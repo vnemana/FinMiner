@@ -80,7 +80,6 @@ public class SearchFundServlet extends HttpServlet {
                     }
                 } catch (ElementNotFoundException e) {
                     System.out.println("Element Not Found Exception");
-                    //e.printStackTrace();
                 } catch (SAXException | ParserConfigurationException | ServletException e) {
                     e.printStackTrace();
                 }

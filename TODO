@@ -33,3 +33,8 @@
 - Clear all funds for one period.
 - Update all funds for all periods.
 - Clear all funds for all periods
+
+
+07/04/2018
+- Provide an option to choose from All 13Fs or specific ones.
+- For each chosen one, perform the update.

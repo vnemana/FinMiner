@@ -77,11 +77,6 @@ public class Get13FServlet extends HttpServlet {
             }
         }
 
-//        for (Object o : holdingRecords.entrySet()) {
-//            HashMap.Entry pair = (HashMap.Entry) o;
-//            HoldingRecord hr = (HoldingRecord) pair.getValue();
-            //System.out.println(hr.cusip + " "  + hr.issuerName + " " + hr.numberOfShares);
-//        }
         return holdingRecords;
     }
 }
