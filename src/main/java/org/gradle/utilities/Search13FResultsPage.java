@@ -5,6 +5,7 @@ import com.gargoylesoftware.htmlunit.html.DomNode;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTable;
 import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
+import org.gradle.demo.FilingLinkInfo;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,18 +31,28 @@ public class Search13FResultsPage {
         return null;
     }
 
-    public ArrayList<String> get13FFilingLinks() {
-        ArrayList<String>links = new ArrayList<>();
+    public ArrayList<FilingLinkInfo> get13FFilingLinks() {
+        ArrayList<FilingLinkInfo>links = new ArrayList<>();
         List<DomNode> domNodes = search13fResultsPage.getByXPath("/html/body/div[4]/div[4]/table");
-        final HtmlTable table = (HtmlTable) domNodes.get(0);
-        List<HtmlTableRow> rows = table.getRows();
-        for (int ii=0; ii<rows.size()-2; ii++) {
-            List<DomNode> site = search13fResultsPage.getByXPath(
-                    "/html/body/div[4]/div[4]/table/tbody/tr["+(ii+2)+"]/td[2]/a/@href");
-            List<DomNode> docType = search13fResultsPage.getByXPath(
-              "/html/body/div[4]/div[4]/table/tbody/tr["+(ii+2)+"]/td[1]");
-            if (docType.get(0).getTextContent().equals("13F-HR"))
-                links.add(searchSite + site.get(0).getTextContent());
+        if (domNodes.size() == 1) {
+            final HtmlTable table = (HtmlTable) domNodes.get(0);
+            List<HtmlTableRow> rows = table.getRows();
+            for (int ii = 0; ii < rows.size() - 2; ii++) {
+
+                List<DomNode> site = search13fResultsPage.getByXPath(
+                        "/html/body/div[4]/div[4]/table/tbody/tr[" + (ii + 2) + "]/td[2]/a/@href");
+                List<DomNode> docType = search13fResultsPage.getByXPath(
+                        "/html/body/div[4]/div[4]/table/tbody/tr[" + (ii + 2) + "]/td[1]");
+                List<DomNode> fDate = search13fResultsPage.getByXPath(
+                        "/html/body/div[4]/div[4]/table/tbody/tr[" + (ii + 2) + "]/td[4]");
+
+                if (docType.get(0).getTextContent().equals("13F-HR")) {
+                    FilingLinkInfo fInfo = new FilingLinkInfo();
+                    fInfo.setLink(searchSite + site.get(0).getTextContent());
+                    fInfo.setFilingDate(fDate.get(0).getTextContent());
+                    links.add(fInfo);
+                }
+            }
         }
         return links;
     }
